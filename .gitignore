@@ -1,0 +1,128 @@
+# ============================================
+# OS / System
+# ============================================
+.DS_Store
+Thumbs.db
+
+# ============================================
+# Python (FastAPI backend)
+# ============================================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Python cache / temp
+*.log
+*.tmp
+*.temp
+*.cache/
+.cache/
+pytest_cache/
+pip-wheel-metadata/
+.mypy_cache/
+.pytype/
+.pyright/
+
+# Build & packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# ============================================
+# Environment variables & secrets
+# ============================================
+.env
+.env.*
+*.secret
+secrets.json
+
+# ============================================
+# FastAPI static files
+# ============================================
+static/images/generated/
+static/cache/
+static/temp/
+
+# Map files (minify tools)
+*.map
+
+# ============================================
+# Database / Local cache
+# ============================================
+*.sqlite
+*.sqlite3
+*.db
+
+# ============================================
+# AI model files (optional)
+# ============================================
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# ============================================
+# Editor / IDE
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ============================================
+# Logs
+# ============================================
+logs/
+*.log
+
+# ============================================
+# Docker 관련 (중요)
+# ============================================
+
+# Dockerfile 빌드 시 생성되는 임시 파일 무시
+*.tar
+*.tar.gz
+*.img
+
+# docker-compose override 파일 무시
+docker-compose.override.yml
+docker-compose.local.yml
+
+# Docker 볼륨 데이터 (로컬 저장용 폴더가 있다면)
+docker/data/
+docker/volumes/
+volumes/
+data/
+
+# Podman, BuildKit 등에서 생성하는 임시 파일
+.cache/
+tmp/
+buildkit-cache/
+
+# Docker Desktop 관련
+.docker/
+
+# Docker 빌드 결과로 생긴 레이어 캐시
+**/.dockerignore
+**/.docker/*
+
+# 컨테이너 내부에서 복사된 생성 파일들
+app/__pycache__/
+app/tmp/
+app/.pytest_cache/
+app/*.log
+
+# ============================================
+# Misc
+# ============================================
+*.bak
+*.orig
