@@ -22,7 +22,6 @@ def generate_pixelart_image(prompt: str, seed: int | None = None) -> str:
         out_size=64,
     )
 
-    # 예: base64로 인코딩해서 JSON으로 반환하기
     buffer = BytesIO()
     img.save(buffer, format="PNG")
     encoded = base64.b64encode(buffer.getvalue()).decode("utf-8")

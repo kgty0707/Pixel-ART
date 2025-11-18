@@ -1,4 +1,3 @@
-# app/schemas/generation.py
 from pydantic import BaseModel
 
 

@@ -1,7 +1,6 @@
 import torch
 from diffusers import DiffusionPipeline, LCMScheduler
 from PIL import Image
-from . import __init__  # 패키지 인식용
 from app.core.config import settings
 
 
@@ -16,23 +15,30 @@ class PixelArtPipeline:
         )
         self.pipe.scheduler = LCMScheduler.from_config(self.pipe.scheduler.config)
 
-        # LCM LoRA
         self.pipe.load_lora_weights(
             settings.lcm_lora_id,
             adapter_name="lcm",
         )
 
-        # 스타일 LoRA
         self.pipe.load_lora_weights(
             settings.style_lora_dir,
             weight_name=settings.style_lora_name,
             adapter_name="style",
         )
 
-        # 두 어댑터 조합
+        self.pipe.load_lora_weights(
+            settings.concept_lora_dir,
+            weight_name=settings.concept_lora_name,
+            adapter_name="concept",
+        )
+
+        # 세 어댑터 조합해서 사용
+        #   - lcm: 속도/샘플러 역할
+        #   - style: 전체 픽셀아트 스타일
+        #   - concept: 랜드마크/콘텐츠 모양 강조
         self.pipe.set_adapters(
-            ["lcm", "style"],
-            [1.0, 0.9],  # 추후 config로 빼도 됨
+            ["lcm", "style", "concept"],
+            [1.0, 0.9, 0.6],   # 가중치는 나중에 조정해보면서 튜닝
         )
 
         if device == "cuda":
