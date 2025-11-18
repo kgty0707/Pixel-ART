@@ -5,23 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI, 서울을 픽셀로 물들이다</title>
 
-    <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
 
-    <!-- Pixel Font -->
+        <!-- Pixel Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
         rel="stylesheet"
     >
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="static/css/style.css">
+    <script src="static/js/static.js"></script>
 </head>
 <body class="bg-brand-dark text-brand-light font-pixel min-h-screen flex items-center justify-center p-4">
-
-    <!-- 메인 앱 쉘 -->
+    <container class="px-2">
+        <!-- 메인 앱 쉘 -->
     <div class="app-shell w-full max-w-5xl h-[90vh] bg-brand-dark/80 border border-gray-800 rounded-2xl shadow-2xl flex flex-col px-6 py-6 overflow-hidden">
 
         <!-- 헤더 -->
@@ -30,7 +28,7 @@
                 AI, 서울을 픽셀로 물들이다
             </h1>
             <p class="text-[11px] md:text-xs text-brand-dim leading-relaxed">
-                "경복궁", "세종대왕"을 입력하면, AI가 약 8초 만에 32x32 픽셀 아트로 완성합니다.
+                "경복궁", "세종대왕"을 입력하면, 픽셀 아트로 완성합니다.
             </p>
         </header>
 
@@ -61,13 +59,6 @@
             </div>
         </form>
 
-        <!-- 로딩·에러 상태 영역 -->
-        <div class="flex items-center gap-3 min-h-[2.5rem] mb-3">
-            <div id="loading-spinner" class="loader hidden"></div>
-            <div id="loading-text" class="text-[10px] md:text-xs text-brand-dim hidden"></div>
-            <div id="error-message" class="text-[10px] md:text-xs text-red-500 hidden"></div>
-        </div>
-
         <!-- 메인 레이아웃: 왼쪽 포커스 / 오른쪽 히스토리 -->
         <div id="main-layout" class="flex flex-1 gap-6 overflow-hidden">
 
@@ -76,7 +67,7 @@
                 id="focus-container"
                 class="flex-1 flex items-center justify-center bg-brand-gray/70 border border-gray-800 rounded-xl px-4 py-4"
             >
-                <p class="text-[10px] md:text-xs text-brand-dim text-center leading-relaxed">
+                <p class="w-64 text-[10px] md:text-xs text-brand-dim text-center break-keep leading-relaxed">
                     아직 생성된 이미지가 없습니다. <br>
                     상단 입력창에 <span class="text-brand-blue">"경복궁"</span>, 
                     <span class="text-brand-blue">"떡볶이"</span>, 
@@ -101,18 +92,15 @@
                     id="gallery"
                     class="flex-1 flex flex-col gap-3 overflow-y-auto pr-1 min-h-0"
                 >
-                    <!-- JS에서 아이템이 prepend 됩니다 -->
                 </div>
             </aside>
         </div>
 
-        <!-- 푸터 -->
+        <!-- Footer -->
         <footer class="pt-3 mt-3 border-t border-gray-800 text-[9px] md:text-[10px] text-brand-dim text-right">
-            Made for SeSAC Hackathon 2024
+            Made for SeSAC Hackathon 2025
         </footer>
-    </div>
-
-    <!-- Custom JS -->
-    <script src="static/js/static.js"></script>
+    </div>    
+    </container>
 </body>
 </html>

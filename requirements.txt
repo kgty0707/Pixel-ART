@@ -2,6 +2,7 @@ accelerate==1.11.0
 annotated-doc==0.0.3
 annotated-types==0.7.0
 anyio==4.11.0
+async-timeout==5.0.1
 brotlicffi @ file:///C:/miniconda3/conda-bld/brotlicffi_1762950448512/work
 certifi @ file:///C:/miniconda3/conda-bld/certifi_1763135347537/work/certifi
 cffi @ file:///C:/miniconda3/conda-bld/cffi_1761832794697/work
@@ -42,6 +43,7 @@ pydantic_core==2.41.5
 PySocks @ file:///C:/miniconda3/conda-bld/pysocks_1761753030270/work
 python-dotenv==1.2.1
 PyYAML @ file:///C:/b/abs_14xkfs39bx/croot/pyyaml_1728657968772/work
+redis==7.0.1
 regex==2025.11.3
 requests @ file:///C:/miniconda3/conda-bld/requests_1762359612241/work
 safetensors==0.6.2

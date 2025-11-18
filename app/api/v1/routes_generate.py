@@ -1,52 +1,70 @@
 from fastapi import APIRouter, HTTPException
-from app.schemas.generation import ImageRequest, ImageResponse
-from app.services.generation_service import get_mock_pixel_art_url, generate_pixelart_image
+from uuid import uuid4
+import json
 
-router = APIRouter(
-    prefix="/api/v1",
-    tags=["generate"],
-)
+from app.schemas.generation import ImageRequest  # prompt만 있는 요청 모델
+from app.schemas.job import JobResponse, StatusResponse, ImageResult
+from app.core.redis_client import redis, QUEUE_NAME
 
-@router.post("/generate", response_model=ImageResponse)
-async def generate_image_endpoint(request: ImageRequest):
-    """
-    프롬프트를 받아 실제 픽셀 아트 이미지를 생성해
-    base64 data URL 형태로 반환하는 엔드포인트.
-    """
+router = APIRouter(prefix="/api/v1", tags=["generate"])
+
+
+@router.post("/generate", response_model=JobResponse)
+async def generate_image_endpoint(request: ImageRequest) -> JobResponse:
     if not request.prompt:
         raise HTTPException(status_code=400, detail="Prompt cannot be empty")
 
-    try:
-        # 1) 실제 모델로부터 base64 PNG 문자열을 얻고
-        img_b64 = generate_pixelart_image(
-            prompt=request.prompt,
-            seed=None,  # 나중에 ImageRequest에 seed를 넣으면 여기 연결
-        )
+    trigger = "in sks_pixelart_style"
+    final_prompt = f"{request.prompt} {trigger}"
+    
+    job_id = str(uuid4())
 
-        # 2) 프론트에서 그대로 <img src="...">로 쓸 수 있게 data URL로 포장
-        data_url = f"data:image/png;base64,{img_b64}"
+    # 초기 상태 저장
+    await redis.hset(
+        f"job:{job_id}",
+        mapping={
+            "status": "pending",
+            "prompt": final_prompt,
+        },
+    )
 
-        # 3) ImageResponse 스키마에 맞춰서 반환
-        return ImageResponse(
-            imageUrl=data_url,
-            prompt=request.prompt,
-        )
+    # 큐에 작업 push
+    payload = {"id": job_id, "prompt": final_prompt}
+    await redis.lpush(QUEUE_NAME, json.dumps(payload))
 
-    except Exception as e:
-        print(f"Error generating image: {e}")
-        raise HTTPException(status_code=500, detail="Failed to generate image")
+    return JobResponse(jobId=job_id, status="pending")
 
-# @router.post("/generate", response_model=ImageResponse)
-# async def generate_image_endpoint(request: ImageRequest):
-#     """
-#     프롬프트를 받아 픽셀 아트 이미지 URL을 반환하는 API 엔드포인트
-#     """
-#     if not request.prompt:
-#         raise HTTPException(status_code=400, detail="Prompt cannot be empty")
 
-#     try:
-#         image_url = get_mock_pixel_art_url(request.prompt)
-#         return ImageResponse(imageUrl=image_url, prompt=request.prompt)
-#     except Exception as e:
-#         print(f"Error generating image: {e}")
-#         raise HTTPException(status_code=500, detail="Failed to generate image")
+@router.get("/status/{job_id}", response_model=StatusResponse)
+async def get_status(job_id: str) -> StatusResponse:
+    status = await redis.hget(f"job:{job_id}", "status")
+    if status is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return StatusResponse(jobId=job_id, status=status)
+
+
+@router.get("/result/{job_id}", response_model=ImageResult)
+async def get_result(job_id: str) -> ImageResult:
+    record = await redis.hgetall(f"job:{job_id}")
+    if not record:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    status = record.get("status")
+    if status != "done":
+        # 아직 처리 중이면 202
+        raise HTTPException(status_code=202, detail=f"Job status: {status}")
+
+    # base64 또는 URL 형태 모두 지원
+    image_url = record.get("result_url")
+    image_data = record.get("result_base64")
+    prompt = record.get("prompt", "")
+
+    if not (image_url or image_data):
+        raise HTTPException(status_code=500, detail="Result not found")
+
+    return ImageResult(
+        jobId=job_id,
+        prompt=prompt,
+        imageUrl=image_url,
+        imageData=image_data,
+    )

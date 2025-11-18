@@ -12,13 +12,10 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    /* 어두운 오버레이 + 배경 이미지 */
-    background-image:
-        linear-gradient(
-            rgba(13, 17, 23, 0.4),
-            rgba(13, 17, 23, 0.4)
-        ),
-        url('/static/images/Untitled.png');
+    /* 배경 이미지 제거 → 대신 어두운 배경색 유지 */
+    background-color: #ffffff; /* brand-dark 색 */
+    background-image: none;
+
     background-size: cover;
     background-position: center center;
     background-attachment: fixed;
@@ -106,4 +103,27 @@ body {
 #gallery::-webkit-scrollbar-thumb {
     background-color: #00dbde;
     border-radius: 999px;
+}
+
+/* 디퓨전 생성 느낌을 내는 키프레임 */
+@keyframes diffusionReveal {
+    0% {
+        opacity: 0;
+        filter: blur(15px) contrast(200%) brightness(150%); /* 흐리고, 쨍하고, 밝게 */
+        transform: scale(0.9); /* 약간 작게 시작 */
+    }
+    50% {
+        opacity: 1;
+        filter: blur(5px) contrast(120%) brightness(110%);
+    }
+    100% {
+        opacity: 1;
+        filter: blur(0) contrast(100%) brightness(100%); /* 원본 */
+        transform: scale(1);
+    }
+}
+
+/* 이 클래스가 붙으면 애니메이션 실행 (1.5초 동안) */
+.animate-diffusion {
+    animation: diffusionReveal 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
